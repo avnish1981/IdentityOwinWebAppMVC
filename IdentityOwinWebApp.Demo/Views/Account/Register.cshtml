@@ -1,0 +1,46 @@
+﻿@model IdentityOwinWebApp.Demo.Models.Register
+    <h1>Registration</h1>
+</hr>
+
+    <form asp-controller="Account" asp-action="Register" method="post" >
+        <div asp-validation-summary="All " class="text-danger "></div>
+        @*<div class="form-group ">
+            <label asp-for="@Model.UserName " class="col-md-2 control-label "></label>
+            <div class="col-md-5">
+                <input asp-for="@Model.UserName " class="form-control " />
+            </div>
+            <span asp-validation-for="LastName " class="text-danger "></span>
+        </div>
+        <div class="form-group ">
+            <label asp-for="@Model.Password " class="col-md-2 control-label "></label>
+            <div class="col-md-5">
+                <input asp-for="@Model.Password " class="form-control " />
+            </div>
+            <span asp-validation-for="LastName " class="text-danger "></span>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-5">
+                <input type="password"  class="btn btn-primary" value="Register" />
+            </div>
+        </div>*@
+        <div>
+            @Html.ValidationSummary()
+            <div class="form-group ">
+                @Html.LabelFor(x => x.UserName)
+
+                @Html.TextBoxFor(x => x.UserName)
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(x => x.Password)
+
+                @Html.TextBoxFor(x => x.Password)
+
+            </div>
+        </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-5">
+                    <input type="submit" class="btn btn-primary" value="Register" />
+                </div>
+            </div>
+        
+    </form>

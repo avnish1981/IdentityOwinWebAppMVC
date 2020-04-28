@@ -1,0 +1,195 @@
+kestral
+1.Cross plateform WEB serverfor ASP.NET Core
+2.Kestral can be used by itself as an edge server
+3.The process used to host the app is dotnet.exe
+
+
+Roles of CreateDefaultBuilder()
+1.Setting up Web Server
+2.Loading host and application configuration from various configuration sources
+3.Configuring logging
+
+ASP.NET core application can be hosted 
+1.InProcess
+2.OutOfProcess
+
+InProcess hosting delivers higher request significantilly.Inprcess hosing having only one web Server i,e IIS.
+
+Out of process hosing contain 2 Web Servrs
+
+1. Internal 
+2. External
+
+The Intrnal Web Server is Kestrel and external web server can be IIS , nginx or Apache
+
+what is kestrel
+1. Cross plateform Web Server for ASP.NET core
+2.kestrel can be used , by itself as edge server
+3. The name of the process used in kestrel server is dotnet.exe
+
+<aspnetcorehostingmodel> - OutOfProcess it is default hosting process 
+
+When we run our application with .NETCLI (visual studio command prompt) then it internally uses kestrel as a server.
+
+In OutofProcess IIS,Apache and nginx act as a reverse proxy server , reason is using is that iis acan be configured as addition security feature.
+
+Middleware Request /response pipeline
+
+by default asp.net core application will not access static files to do so we need to create statis file inside wwwroot folder
+usefileserver - middle were combine the functionality of usedefaultfiles,usestaticfiles and usedirectorybrower 
+
+AddMvc() - add all mvc servies 
+AddMvccore() - add only core mvc services
+
+addmvc internally calls addmvccode method for ecectutation.
+
+https://www.youtube.com/watch?v=KQH51Yip0K0&list=PL6n9fhu94yhVkdrusLaQsfERmL_Jh4XmU&index=16
+
+Advantages of using interface 
+1. we can use dependency injection
+2.application maintaience and change is easy
+3.unit testing is easy
+
+IN dotnet core Static void Main method is the entry point .
+
+when we write "dotnet run " in command line , it will look the project file and build the project .
+
+First it will look the Launch setting where all URL listing the ports .
+
+As long as application run the entry point is Main method where it createWebHostBuilder and inside webhostbuilder it will create default builder where it will map some default configuration services like logging services to console . 
+
+here it will initiate the startup class which will allow to configure custome configuration service , which will be injected inside pagemodel class or controller classs.
+
+again ASP.NET COre will invoke confiure method. The Configure method will establish the middle wear will execute what http incoming request message.
+
+Configure method in startup class is used to configure/Install middleware.
+
+Middlware will processing HTTP messages.
+Middleware having 3 basic blocks
+1.Logger
+2.Authorizer
+3.Router
+
+Mgration - Migrations is created by EF Core and it basically it just code a code , it will execute to bring the database model in sync with domain model.
+
+
+
+create login psuser with password='Tinku1982$$'
+
+create user psuser for login psuser 
+
+exec sp_addrolemember 'db_datareader','psuser'
+exec sp_addrolemember 'db_datawriter','psuser'
+exec sp_addrolemember 'db_ddladmin','psuser'
+
+
+Server=tcp:bethydb.database.windows.net,1433;Initial Catalog=BethyDB;Persist Security Info=False;User ID=psuser;Password=Tinku1982$$;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;
+
+Provider=sqloledb;Server=tcp:bethydb.database.windows.net,1433;Database=BethyDB;User Id=psuser;Password=Tinku1982$;
+
+
+ConnectionStrings:DefaultConnection - connectionstring in appconfig
+
+add-migration <<InitialMigration>>
+update-database
+
+
+Steps To fix HTTPS ISSUE
+
+1. dotnet dev-certs https --clean
+
+2.dotnet dev-certs https -t
+3.dotnet dev-certs https --check
+dotnet run 
+
+https://dev.azure.com/avnishkumar1981 - Dev Ops URL
+
+Tag Helper - Taghelper enable C# server side code to participate and rendering HTML elements in Razor Files.
+
+Microsoft.AspNET.Identity.entityFramework - Default Implementation of Iuser and IUserStore found in this Nuget package.
+
+OWIN (Open Web Interface for .NET) defines a standard interface between .NET web servers and web applications. The goal of the OWIN interface is to decouple server and application, encourage the development of simple modules for .NET web development, and, by being an open standard, stimulate the open source ecosystem of .NET web development tools.
+
+ASP.NET Idenetity Structure have two main components.
+1.Manager
+2.Store
+
+Manger is responsiable for how application intract with  ASP.NET Identity
+Store is responsiable for how asp.net Identity  intract with Database.
+
+Manager are two types
+1.UserManager
+2.RoleManager
+
+Store Uses IUserStore and IRoleStore 
+
+Entity uses IUser and IRole
+
+UserManager -> IUserStore ->IUser
+
+RoleManager ->IRoleStore ->IRole
+
+IUser has only two Propties
+1.Id and UserName
+
+IUserStore -> It is abstraction of data store/Database,followed by below methods 
+
+Task CreateAsync(TUser user);
+
+Task UpdateAsync(TUser user);
+
+Task DeleteAsync(TUser user);
+
+Task<TUser>FindByIdAsync(Tkey userid);
+
+Task<TUser> FindByNameAsync(string userName);
+
+UserManager - This is where application intract with asp.net Identity Library.
+
+Usermanger having single contructor and it is work with any datastore /database.
+
+Public class Usermanager<Tuser,Tkey>:Idisposable
+{
+ where Tuser : class ,Iuser<Tkey>
+ where Tkey : IEqatable<Tkey>{
+
+Public Usermanager(IUserStore <Tuser,Tkey> store){
+}
+}
+} 
+
+IUser,IUserEmailStore,IUserPasswordStore,IUserSecurityStampStore,IUserPhoneNumberStore,IUserTwoFactorStore,IUserLockOutStore
+
+OWIN Library
+
+Microsoft.ASpNEt.Identity.Owin
+Microsoft.AspNet.Identity.EntityFramework
+Microsoft.Owin.Host.SystemWeb
+
+SignInManager - That provides simple method to verify credentails and generating Identity to use with in Owin Middlware.
+
+OWIN Extension - For setting up cookies to useful to asp.net Identity usecases such that Two factor authentication . These extensions build on both OWIN IAppbuilder and athentication manager.
+
+OWIN Data Protector TokenProvider - That uses the configured OWin data Protector to protect any token generated by asp.net Identity.Typically these Data Protector would be IIS Machine key.
+
+SecurityStamp Validation - Providing way to OWIN Pipeline to validate cookies upon change in identity data.
+
+SignINManager are three types
+1.Password
+2.External
+3.TwoFactor
+
+OWIN extension - app.CreatePerOwinContext<userManager>
+                 ((identityfactoryOptions,owinContext)=>
+                  new Usermanager(owinContext.get<UserStore>()));
+
+CreatePerOwinContext - enables depedency injection and life time management . It will be created as per request .
+
+manager = HttpContext.getOwinContext().Get<Usermanager>(); - for current request using httpcontext to retrive depedency directly encode. 
+
+
+                  
+
+
+
+ 
