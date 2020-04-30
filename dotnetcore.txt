@@ -187,6 +187,13 @@ CreatePerOwinContext - enables depedency injection and life time management . It
 
 manager = HttpContext.getOwinContext().Get<Usermanager>(); - for current request using httpcontext to retrive depedency directly encode. 
 
+Difference between Two factor and two Step verification.
+
+https://paul.reviews/the-difference-between-two-factor-and-two-step-authentication
+
+
+https://accounts.google.com/signin/oauth/identifier?response_type=code&client_id=607952613416-fcl5l3ca9jf9pe89s5dtf2aqgbc4jqkn.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A49719%2Fsignin-google&scope=openid%20profile%20email&state=nkz1y9VkLtBCvncez5Ac004JOVPdbyq9O154LWTj_2ofolnZDHrVBwYGdj7OLgoAIdfUB8nTdjN_2ZkjNQI0TqO6bTA3yk6rAjw4phA_47vEWKISs371lUb_CXYqXDywp-VVdswxEURyzX40WUVJUQ5rtGcIUF6y-kPiEC2Oclxxyj0ns-uW9-38yTVYOPdDseMKzwzT_Fy_mTtTcpTyFhbAaLvuf_ZEzHslaZKctNL9tnyUalLvpzxInSZZ_b4W&o2v=1&as=aZd_cN2HxJrwtdfwZFItSA&flowName=GeneralOAuthFlow
+
 
                   
 

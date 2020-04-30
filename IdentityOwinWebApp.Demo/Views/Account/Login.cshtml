@@ -1,30 +1,35 @@
-﻿
-@model IdentityOwinWebApp.Demo.Models.Login 
+﻿@using Microsoft.Owin.Security
+@model IdentityOwinWebApp.Demo.Models.Login
 <h1>Registration</h1>
 </hr>
 
-<form asp-controller="Account" asp-action="Login" method="post">
-    <div asp-validation-summary="All " class="text-danger "></div>
-    
-    <div>
-        @Html.ValidationSummary()
-        <div class="form-group ">
-            @Html.LabelFor(x => x.UserName)
+<h1>Registration</h1>
+<hr />
+@using (Html.BeginForm("Login", "Account", FormMethod.Post))
+{
+    @Html.ValidationSummary()
+    @Html.LabelFor(x => x.UserName ) @Html.TextBoxFor(x => x.UserName )
+    <br />
+    @Html.LabelFor(x => x.Password) @Html.PasswordFor(x => x.Password)
+    <br />
+    <input class="btn" type="submit" value="Login" />
+}
+@Html.ActionLink("Forgot Password?", "ForgotPassword")
 
-            @Html.TextBoxFor(x => x.UserName)
-        </div>
-        <div class="form-group ">
-            @Html.LabelFor(x => x.Password)
+@{
+    var providers = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
 
-            @Html.TextBoxFor(x => x.Password)
-
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-5">
-            <input type="submit" class="btn btn-primary" value="Register" />
-        </div>
-    </div>
-
-</form>
+    if (providers != null && providers.Any())
+    {
+        using (Html.BeginForm("ExternalAuthentication", "Account", FormMethod.Post))
+        {
+            foreach (var provider in providers)
+            {
+                <button class="btn" value="@provider.AuthenticationType" name="provider" type="submit">
+                    @provider.Caption
+                </button>
+            }
+        }
+    }
+}
 

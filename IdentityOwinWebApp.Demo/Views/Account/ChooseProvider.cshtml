@@ -1,0 +1,13 @@
+﻿@model IdentityOwinWebApp.Demo.Models.ChooseProvider 
+@{
+    ViewBag.Title = "ChooseProvider";
+}
+
+<h2>Choose Provider</h2>
+
+<form asp-controller="Account" asp-action="ChooseProvider" method="post" >
+    <p>  Provider : @Html.DropDownListFor(a => a.ChosenProvider, Model.Providers.Select(x => new SelectListItem { Value = x, Text = x }).ToList())</p>
+    <input class="btn btn bg-primary " value="Submit" type="submit" />
+
+</form>
+

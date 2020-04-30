@@ -1,4 +1,4 @@
-﻿@model IdentityOwinWebApp.Demo.Models.Register
+﻿@model IdentityOwinWebApp.Demo.Models.Register  
     <h1>Registration</h1>
 </hr>
 
@@ -26,9 +26,15 @@
         <div>
             @Html.ValidationSummary()
             <div class="form-group ">
-                @Html.LabelFor(x => x.UserName)
+                @Html.LabelFor(x => x.UserName )
 
-                @Html.TextBoxFor(x => x.UserName)
+                @Html.TextBoxFor(x => x.UserName )
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(x => x.LastName)
+
+                @Html.TextBoxFor(x => x.LastName)
+
             </div>
             <div class="form-group ">
                 @Html.LabelFor(x => x.Password)
@@ -36,6 +42,38 @@
                 @Html.TextBoxFor(x => x.Password)
 
             </div>
+            <div class="form-group ">
+                @Html.LabelFor(x => x.AddressLine)
+
+                @Html.TextBoxFor(x => x.AddressLine)
+
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(x => x.Country)
+
+                @Html.TextBoxFor(x => x.Country)
+
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(x => x.Email )
+
+                @Html.TextBoxFor(x => x.Email)
+
+            </div>
+
+            <div class="form-group ">
+                @Html.LabelFor(x => x.DOB)
+
+                @Html.TextBoxFor(x => x.DOB)
+
+            </div>
+            <div class="form-group ">
+                @Html.LabelFor(x => x.PhoneNumber)
+
+                @Html.TextBoxFor(x => x.PhoneNumber)
+
+            </div>
+
         </div>
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-5">
