@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -9,7 +8,9 @@ using Microsoft.Owin.Security.Cookies;
 using IdentityOwinWebApp.Demo.EntityFramework;
 using IdentityOwinWebApp.Demo.Models;
 using Microsoft.Owin.Security.Google;
+using Microsoft.Owin.Security.Facebook;
 using System.Configuration;
+using IdentityOwinWebApp.Demo.Services;
 
 [assembly: OwinStartup(typeof(IdentityOwinWebApp.Demo.Startup))]
 
@@ -47,32 +48,45 @@ namespace IdentityOwinWebApp.Demo
                 (opt, cont)=>
                 {
                     var usermanager = new UserManager<ExtendingUser>(cont.Get<UserStore<ExtendingUser>>());
-                    usermanager.RegisterTwoFactorProvider("SMS", new PhoneNumberTokenProvider<ExtendingUser> {MessageFormat="Token : {0}" });  // here registring the phone number provider for reciving the code.
+                    usermanager.RegisterTwoFactorProvider("SMS", new PhoneNumberTokenProvider<ExtendingUser, string> {MessageFormat= "Your security code is: {0}" });  // here registring the phone number provider for reciving the code.
                     usermanager.SmsService = new SmsService();
+                  //  usermanager.UserTokenProvider = new DataProtectorTokenProvider<ExtendingUser>(opt.DataProtectionProvider.Create()); // This will generate and validate token for Reset and confirmation email.
+                   // usermanager.EmailService = new EmailService();
                     return usermanager;
                 });
 
             app.CreatePerOwinContext<SignInManager<ExtendingUser, string>>((opt, cont) => new SignInManager<ExtendingUser, string>(cont.Get<UserManager<ExtendingUser>>(), cont.Authentication));
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
-                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie
+                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                ExpireTimeSpan = TimeSpan.FromMinutes(20),
+                //CookieName = "AvnishCookie"
 
             });
-            app.UseTwoFactorSignInCookie (DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
+            app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(5));
+            app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
 
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
-
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions
             {
                 ClientId = ConfigurationManager.AppSettings["google:ClientId"],
                 ClientSecret = ConfigurationManager.AppSettings["google:ClientSecret"],
                 Caption = "Google"
-                
+
 
             });
-            
 
-            
+            app.UseFacebookAuthentication(
+                new FacebookAuthenticationOptions
+                {
+                    // Fill in the application ID and secret of your Facebook authentication application
+                    AppId = ConfigurationManager.AppSettings["facebook:appid"],
+                    AppSecret = ConfigurationManager.AppSettings["facebook:appsecret"],
+                    Caption="Facebook"
+                });
+
+
+
 
 
         }

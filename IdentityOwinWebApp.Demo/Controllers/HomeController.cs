@@ -19,7 +19,7 @@ namespace IdentityOwinWebApp.Demo.Controllers
 
             return View();
         }
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";

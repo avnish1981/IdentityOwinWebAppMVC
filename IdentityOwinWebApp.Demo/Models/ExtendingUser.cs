@@ -16,7 +16,11 @@ namespace IdentityOwinWebApp.Demo.Models
         public string LastName { get; set; }
          public string DOB { get; set; }
         public string PhoneNumber { get; set; }
+        public bool EmailConfirmed { get; set; }
+        public bool TwoFactorEnabled { get; set; }
         public string Email { get; set; }
+        public bool PhoneNumberConfirmed { get; set; }
+        
         public virtual ICollection<Address> Addresses { get; private set; } //here you marked collection to be virtual to enable lazy loading .
     }
 }

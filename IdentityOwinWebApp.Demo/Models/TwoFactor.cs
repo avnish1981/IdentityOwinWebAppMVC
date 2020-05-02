@@ -9,5 +9,6 @@ namespace IdentityOwinWebApp.Demo.Models
     {
         public string  Provider { get; set; }
         public string Code { get; set; }
+        public bool RememberBrowser { get; set; }
     }
 }

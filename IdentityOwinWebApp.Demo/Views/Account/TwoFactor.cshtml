@@ -3,7 +3,8 @@
 
 <form asp-controller="Account" asp-action="TwoFactor" method="post" >
     @Html.HiddenFor(x=>x.Provider )
-    <p>Code : @Html.TextBoxFor(x=>x.Code)</p>
+    <p>Code : @Html.TextBoxFor(x=>x.Code )</p>
+    @Html.CheckBoxFor(x=>x.RememberBrowser)
     <input type="submit" value="submit" class="btn btn-primary " />
 
 </form>

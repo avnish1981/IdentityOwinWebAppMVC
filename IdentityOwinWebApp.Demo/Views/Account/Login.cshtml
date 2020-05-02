@@ -2,34 +2,46 @@
 @model IdentityOwinWebApp.Demo.Models.Login
 <h1>Registration</h1>
 </hr>
-
-<h1>Registration</h1>
-<hr />
-@using (Html.BeginForm("Login", "Account", FormMethod.Post))
-{
-    @Html.ValidationSummary()
-    @Html.LabelFor(x => x.UserName ) @Html.TextBoxFor(x => x.UserName )
-    <br />
-    @Html.LabelFor(x => x.Password) @Html.PasswordFor(x => x.Password)
-    <br />
-    <input class="btn" type="submit" value="Login" />
-}
-@Html.ActionLink("Forgot Password?", "ForgotPassword")
-
-@{
-    var providers = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
-
-    if (providers != null && providers.Any())
-    {
-        using (Html.BeginForm("ExternalAuthentication", "Account", FormMethod.Post))
+<div class="row ">
+    <div class="col-md-6 ">
+        <h1>Local Account Login</h1>
+        <hr />
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
         {
-            foreach (var provider in providers)
+            @Html.ValidationSummary()
+            @Html.LabelFor(x => x.UserName) @Html.TextBoxFor(x => x.UserName)
+            <br />
+            @Html.LabelFor(x => x.Password) @Html.PasswordFor(x => x.Password)
+            <br />
+            <input class="btn" type="submit" value="Login" />
+        }
+    </div>
+
+    <div class="col-md-6">
+        <h1>External Login</h1>
+        <hr />
+        @{
+            var providers = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+
+            if (providers != null && providers.Any())
             {
-                <button class="btn" value="@provider.AuthenticationType" name="provider" type="submit">
-                    @provider.Caption
-                </button>
+                using (Html.BeginForm("ExternalLoginAuthentication", "Account", FormMethod.Post))
+                {
+                    foreach (var provider in providers)
+                    {
+                        <button class="btn" value="@provider.AuthenticationType" name="provider" type="submit">
+                            @provider.Caption
+
+                        </button>
+                    }
+                }
             }
         }
-    }
-}
+    </div>
+
+</div>
+
+
+
+
 
