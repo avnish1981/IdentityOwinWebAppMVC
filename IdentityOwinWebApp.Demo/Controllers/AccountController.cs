@@ -10,17 +10,27 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin.Security;
 using System.Security.Claims;
+using Microsoft.Owin.Logging;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace IdentityOwinWebApp.Demo.Controllers
 {
     public class AccountController : Controller
     {
+        public UserManager<ExtendingUser,string > UserManager;
+        public SignInManager<ExtendingUser , string> SignInManager;
+
         //public UserManager<IdentityUser> UserManager => HttpContext.GetOwinContext().Get<UserManager<IdentityUser>>();
         //public SignInManager<IdentityUser, string> SignInManager => HttpContext.GetOwinContext().Get<SignInManager<IdentityUser, string>>();
         //Extending User Configuration
-        public UserManager<ExtendingUser> UserManager => HttpContext.GetOwinContext().Get<UserManager<ExtendingUser>>();
-        public SignInManager<ExtendingUser, string> SignInManager => HttpContext.GetOwinContext().Get<SignInManager<ExtendingUser, string>>();
+        //public UserManager<ExtendingUser> UserManager => HttpContext.GetOwinContext().Get<UserManager<ExtendingUser>>();
+        //public SignInManager<ExtendingUser, string> SignInManager => HttpContext.GetOwinContext().Get<SignInManager<ExtendingUser, string>>();
         // GET: Account
+        public AccountController(UserManager<ExtendingUser,string> UserManager, SignInManager<ExtendingUser, string> SignInManager)
+        {
+            this.UserManager = UserManager;
+            this.SignInManager = SignInManager;
+        }
 
         /// <summary>
         /// This Method will redirect to External Login page of Google and etc identity provider system.
@@ -49,7 +59,7 @@ namespace IdentityOwinWebApp.Demo.Controllers
                 case SignInStatus.Success:
                     return RedirectToAction("Index", "Home");
                 default:
-                    var user = await UserManager.FindByEmailAsync(loginInfo.ExternalIdentity.FindFirstValue(ClaimTypes.Email )); // checking here user has local account in the ASPNetUsers Table
+                    var user = await UserManager.FindByEmailAsync(loginInfo.ExternalIdentity.FindFirstValue(ClaimTypes.Email  )); // checking here user has local account in the ASPNetUsers Table
                     
                     //creating new user in ASPNETUsers table 
                     if(user == null)
@@ -83,7 +93,7 @@ namespace IdentityOwinWebApp.Demo.Controllers
         public async Task<ActionResult> Login(Login login )
         {
             
-           var signInStatus =  await SignInManager.PasswordSignInAsync(login.UserName, login.Password,true, false);
+           var   signInStatus =  await SignInManager.PasswordSignInAsync(login.UserName, login.Password,true,true);
             switch(signInStatus)
             {
                 case SignInStatus.Success:
@@ -91,31 +101,53 @@ namespace IdentityOwinWebApp.Demo.Controllers
                    // return RedirectToAction("ChooseProvider");
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("ChooseProvider");
+                                   
                 default:
                     ModelState.AddModelError("", "Invalid Crendentials");
                     return View(login);
             }
+            signinresult
+         
             
         }
-        //public ActionResult ForgotPassword()
-        //{
-        //    return View();
-        //}
+        [HttpGet ]
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
 
-        //[HttpPost]
-        //public async Task<ActionResult> ForgotPassword(ForgotPassword model)
-        //{
-        //    var user = await UserManager.FindByNameAsync(model.UserName);
+        [HttpPost]
+        public async Task<ActionResult> ForgotPassword(ForgotPassword model )
+        {
+            var user = await UserManager.FindByNameAsync(model.UserName);
 
-        //    if (user != null)
-        //    {
-        //        var token = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-        //        var resetUrl = Url.Action("PasswordReset", "Account", new { userid = user.Id, token = token }, Request.Url.Scheme);
-        //        await UserManager.SendEmailAsync(user.Id, "Password Reset", $"Use link to reset password: {resetUrl}");
-        //    }
+            if (user != null)
+            {
+                var token = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var resetUrl = Url.Action("PasswordReset", "Account", new { userid = user.Id, token = token }, Request.Url.Scheme);
+             
+                await UserManager.SendEmailAsync(user.Id, "Password Reset", $"Use link to reset password: {resetUrl}");
+            }
 
-        //    return RedirectToAction("Index", "Home");
-        //}
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet ]
+        public ActionResult PasswordReset(string userId,string token)
+        {
+            return View(new PasswordReset { UserId = userId, Token = token });
+        }
+        [HttpPost ]
+        public async Task<ActionResult > PasswordReset (PasswordReset reset )
+        {
+           var identityResult =  await UserManager.ResetPasswordAsync(reset.UserId, reset.Token, reset.Password);
+             if(identityResult == null)
+            {
+                return View("Error");
+            }
+            return RedirectToAction("Index", "Home");   
+
+        }
         public async  Task<ActionResult > ChooseProvider()
         {
             var userId = await SignInManager.GetVerifiedUserIdAsync();
@@ -151,9 +183,9 @@ namespace IdentityOwinWebApp.Demo.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> Register(Register register)
+        public async Task<ActionResult> Register(ExtendingUser  register)
         {
-            var idenetityUser = await UserManager.FindByNameAsync(register.UserName );
+            var idenetityUser = await UserManager.FindByNameAsync(register.Email);
             if (idenetityUser != null)
             {
                 return RedirectToAction("Index", "Home");
@@ -170,20 +202,26 @@ namespace IdentityOwinWebApp.Demo.Controllers
                 var user = new ExtendingUser
                 {
 
-                    UserName = register.UserName,
+                    UserName = register.Email,
                     LastName = register.LastName,
                     PhoneNumber = register.PhoneNumber,
                     DOB = register.DOB,
                     Email = register.Email,
-                    EmailConfirmed = true,
-                    TwoFactorEnabled = true,
-                    PhoneNumberConfirmed = true 
+                    FirstName = register.FirstName ,
+                    Country = register.Country 
+                   
+                    
+                    
+                    
 
               };
-                user.Addresses.Add(new Address { AddressLine = register.AddressLine, Country = register.Country, UserId = user.Id });
-                var identityResult = await UserManager.CreateAsync(user, register.Password);
+                user.Addresses.Add(new Address { AddressLine = register.AddressesLine, Country = register.Country, UserId = user.Id });
+                var identityResult = await UserManager.CreateAsync(user, register.PasswordHash);//it will store record in aspnetUsers table
                 if (identityResult.Succeeded)
                 {
+                    var token = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var confirmUrl = Url.Action("ConfirmEmail", "Account", new { userid = user.Id, token = token },Request.Url.Scheme );
+                    await UserManager.SendEmailAsync(user.Id, "Email Confirmation", $"Use link to confirm Email: {confirmUrl }");
                     return RedirectToAction("Index", "Home");
 
                 }
@@ -191,6 +229,16 @@ namespace IdentityOwinWebApp.Demo.Controllers
             }
           
             return View(register);
+        }
+
+        public async Task< ActionResult> ConfirmEmail(string userid,string token)
+        {
+            var identityResult = await UserManager.ConfirmEmailAsync(userid, token);
+            if(!identityResult.Succeeded  )
+            {
+                return View("Error");
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }

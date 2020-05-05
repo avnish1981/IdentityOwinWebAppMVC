@@ -1,4 +1,4 @@
-﻿@model IdentityOwinWebApp.Demo.Models.Register  
+﻿@model IdentityOwinWebApp.Demo.Models.ExtendingUser   
     <h1>Registration</h1>
 </hr>
 
@@ -26,9 +26,9 @@
         <div>
             @Html.ValidationSummary()
             <div class="form-group ">
-                @Html.LabelFor(x => x.UserName )
+                @Html.LabelFor(x => x.FirstName)
 
-                @Html.TextBoxFor(x => x.UserName )
+                @Html.TextBoxFor(x => x.FirstName)
             </div>
             <div class="form-group ">
                 @Html.LabelFor(x => x.LastName)
@@ -37,15 +37,15 @@
 
             </div>
             <div class="form-group ">
-                @Html.LabelFor(x => x.Password)
+                @Html.LabelFor(x =>x.PasswordHash)
 
-                @Html.TextBoxFor(x => x.Password)
+                @Html.TextBoxFor(x => x.PasswordHash)
 
             </div>
             <div class="form-group ">
-                @Html.LabelFor(x => x.AddressLine)
+                @Html.LabelFor(x => x.Addresses)
 
-                @Html.TextBoxFor(x => x.AddressLine)
+                @Html.TextBoxFor(x => x.Addresses)
 
             </div>
             <div class="form-group ">
@@ -55,7 +55,7 @@
 
             </div>
             <div class="form-group ">
-                @Html.LabelFor(x => x.Email )
+                @Html.LabelFor(x => x.Email   )
 
                 @Html.TextBoxFor(x => x.Email)
 
